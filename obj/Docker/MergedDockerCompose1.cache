@@ -1,0 +1,49 @@
+services:
+  db:
+    environment:
+      POSTGRES_PASSWORD: Pass@word
+    hostname: db
+    image: postgres:14.3
+    ports:
+    - published: 5432
+      target: 5432
+    restart: always
+    volumes:
+    - pgdata-diplomski:/var/lib/postgresql/data:rw
+  realestateapi:
+    build:
+      context: C:\Users\Ivana\Desktop\diplomski2\diplomski\src\RealEstateApi
+      dockerfile: Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: RealEstateApi
+      target: base
+    container_name: RealEstateApi
+    entrypoint: tail -f /dev/null
+    environment:
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      NUGET_FALLBACK_PACKAGES: ''
+    image: realestateapi/backend:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages  "/app/bin/Debug/net7.0/RealEstateApi.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof
+        dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
+    ports:
+    - published: 5019
+      target: 80
+    tty: true
+    volumes:
+    - C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Sdks\Microsoft.Docker.Sdk\tools\TokenService.Proxy\linux-x64\net7.0:/TokenService.Proxy:ro
+    - C:\Users\Ivana\Desktop\diplomski2\diplomski\src\RealEstateApi:/app:rw
+    - C:\Users\Ivana\vsdbg\vs2017u5:/remote_debugger:rw
+    - C:\Users\Ivana\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\Ivana\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+    - C:\Users\Ivana\.nuget\packages:/root/.nuget/packages:ro
+    - C:\Users\Ivana\Desktop\diplomski2\diplomski\src\RealEstateApi:/src:rw
+version: '3.4'
+volumes:
+  pgdata-diplomski:
+    external: false

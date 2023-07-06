@@ -1,0 +1,24 @@
+services:
+  db:
+    environment:
+      POSTGRES_PASSWORD: Pass@word
+    hostname: db
+    image: postgres:14.3
+    ports:
+    - published: 5432
+      target: 5432
+    restart: always
+    volumes:
+    - pgdata-diplomski:/var/lib/postgresql/data:rw
+  realestateapi:
+    build:
+      context: C:\Users\Ivana\Desktop\diplomski2\diplomski\src\RealEstateApi
+      dockerfile: Dockerfile
+    image: realestateapi/backend:latest
+    ports:
+    - published: 5019
+      target: 80
+version: '3.4'
+volumes:
+  pgdata-diplomski:
+    external: false
